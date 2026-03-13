@@ -1,0 +1,47 @@
+# This is a Databricks asset bundle definition for maven_DABs.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: maven_DABs
+  uuid: 8ce84606-73c1-4f49-8960-357c28a3221f
+
+include:
+  - resources/*.yml
+  - resources/*/*.yml
+
+# Variable declarations. These variables are assigned in the dev/prod targets below.
+variables:
+  warehouse_id:
+    description: The warehouse to use
+  catalog:
+    description: The catalog to use
+  schema:
+    description: The schema to use
+
+targets:
+  dev:
+    # The default target uses 'mode: development' to create a development copy.
+    # - Deployed resources get prefixed with '[dev my_user_name]'
+    # - Any job schedules and triggers are paused by default.
+    # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
+    mode: development
+    default: true
+    workspace:
+      host: https://adb-7405618060749512.12.azuredatabricks.net
+    variables:
+      warehouse_id: adb-7405618060749512.12.azuredatabricks.net
+      catalog: wsmavenmarket
+      schema: ${workspace.current_user.short_name}
+
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-7405618060749512.12.azuredatabricks.net
+      # We explicitly deploy to /Workspace/Users/naman@namankandhari2003outlook.onmicrosoft.com to make sure we only have a single copy.
+      root_path: /Workspace/Users/naman@namankandhari2003outlook.onmicrosoft.com/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      warehouse_id: adb-7405618060749512.12.azuredatabricks.net
+      catalog: wsmavenmarket
+      schema: default
+    permissions:
+      - user_name: naman@namankandhari2003outlook.onmicrosoft.com
+        level: CAN_MANAGE

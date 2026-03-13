@@ -1,0 +1,21 @@
+resources:
+  pipelines:
+    pipeline_dlt_pipeline:
+      name: DLT_pipeline
+      libraries:
+        - notebook:
+            path:  ../../src/maven_notebook_pipelines/bronze/01_bronze_batch_ingestion.ipynb
+        - notebook:
+            path: ../../src/maven_notebook_pipelines/bronze/02_bronze_mongodb_ingestion.ipynb
+        - notebook:
+            path: ../../src/maven_notebook_pipelines/bronze/03_bronze_kafka_streaming.ipynb
+        - notebook:
+            path: ../../src/maven_notebook_pipelines/silver/04_Silver1_transformations_dlt.ipynb
+        - notebook:
+            path: ../../src/maven_notebook_pipelines/gold/05_gold_star_schema.ipynb
+      schema: gold_schema
+      continuous: true
+      development: true
+      photon: false
+      catalog: maven_catalog
+      serverless: true
